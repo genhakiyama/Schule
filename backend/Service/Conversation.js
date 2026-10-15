@@ -58,7 +58,46 @@ async function CreateConversation(userId , conversation_name , conversation_type
     }
 }
 
+async function RemoveMember(senderId , userId , conversationId) {
+    const sender = await User.findOne({ where : {id : senderId}});
+    const user = await User.findOne({ where : {id : userId}});
+    const conversation = await Conversation.findOne({
+        where : {
+            id : conversationId
+        }
+    });
+
+    const isMember = await ConversationMembers.findOne({
+        where : {
+            userId , conversationId
+        }
+    });
+
+    if (!isMember) return {error : 'Khong ton tai User trong Conversation'};
+    if (!sender || !user) return {error : 'Tai khoan khong hop le'};
+    if (!conversation) return {error : 'Doan chat khong ton tai'};
+    if (sender.role != 'admin') return {error : 'Ban khong co quyen'};
+
+
+    await ConversationMembers.destroy({
+        where : {
+            userId : userId , 
+            conversationId : conversationId
+        }
+    });
+
+    return {
+        success : true , 
+        payload : {
+            message : 'Xoa thanh vien thanh cong' , 
+            userId : userId , 
+            conversationId : conversationId
+        }
+    }
+}
+
 module.exports = {
     JoinConversation , 
-    CreateConversation
+    CreateConversation , 
+    RemoveMember
 };

@@ -6,5 +6,6 @@ const router = express.Router();
 router.post('/send' , MessageController.SendMessageController);
 router.post('/conversation/create' , ConversationController.CreateConversation);
 router.post('/conversation/join' , ConversationController.JoinConversation);
+router.post('/conversation/remove' , ConversationController.RemoveUser);
 
 module.exports = router;

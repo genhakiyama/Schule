@@ -23,12 +23,14 @@ const app = express();
     Message.belongsTo(User , {foreignKey : 'senderID'});    
     User.hasMany(Message , {foreignKey : 'senderID'});
 
-sequelize.sync({force : false});
+sequelize.sync({force : true});
 
 app.use(express.json());
 
+const isAuth = require('../Middleware/is-auth.js');
+
 app.use('/auth' , AuthHandler);
-app.use('/file' , FileHandlerRoute);
-app.use('/chat' , chatHandler);
+app.use('/file' , isAuth , FileHandlerRoute);
+app.use('/chat' , isAuth , chatHandler);
 
 module.exports = app;
